@@ -2,7 +2,7 @@ FROM openjdk:17
 
 WORKDIR /app
 
-COPY target/soat3-ms-eureka-0.0.1-SNAPSHOT.jar /app/soat3-ms-eureka.jar
+COPY target/soat3mseureka-1.0.0.jar /app/soat3-ms-eureka.jar
 
 EXPOSE 8761
 
