@@ -5,8 +5,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.techchallenge</groupId>
-	<artifactId>soat3mseureka</artifactId>
+	<artifactId>soat3-ms-eureka</artifactId>
 	<version>1.0.0</version>
+	<name>soat3-ms-eureka</name>
+	<description>Eureka Server Application</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -14,8 +16,6 @@
 		<version>3.1.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-
-	<description>Eureka Server Application</description>
 
 	<properties>
 		<java.version>17</java.version>
