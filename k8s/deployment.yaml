@@ -1,45 +1,69 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: soat3-ms-eureka-cm
+  name: eureka-cm
 data:
-  eureka_service_address: "http://soat3-ms-eureka-service-0.soat3-ms-eureka-service:8761/eureka"
+  eureka_service_address: http://eureka-0.eureka:8761/eureka
+
 ---
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: soat3-ms-eureka
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: soat3-ms-eureka
-  template:
-    metadata:
-      labels:
-        app: soat3-ms-eureka
-    spec:
-      containers:
-        - name: soat3-ms-eureka
-          image: franciscosviana/soat3-ms-eureka:v1
-          ports:
-            - containerPort: 8761
-          env:
-            - name: EUREKA_SERVER
-              valueFrom:
-                configMapKeyRef:
-                  name: soat3-ms-eureka-cm
-                  key: EUREKA_SERVER
----
+
 apiVersion: v1
 kind: Service
 metadata:
-  name: soat3-ms-eureka-service
+  name: eureka
+  labels:
+    app: eureka
 spec:
   clusterIP: None
-  selector:
-    app: soat3-ms-eureka
   ports:
-    - protocol: TCP
-      port: 8761
-      name: soat3-ms-eureka-service
+    - port: 8761
+      name: eureka
+  selector:
+    app: eureka
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: eureka
+spec:
+  serviceName: "eureka"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eureka
+  template:
+    metadata:
+      labels:
+        app: eureka
+    spec:
+      containers:
+        - name: eureka
+          image: dailycodebuffer/service-registry:0.0.1
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8761
+          env:
+            - name: EUREKA_SERVER_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: eureka-cm
+                  key: eureka_service_address
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: eureka-lb
+  labels:
+    app: eureka
+spec:
+  selector:
+    app: eureka
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 8761
