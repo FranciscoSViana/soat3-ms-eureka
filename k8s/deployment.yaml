@@ -3,10 +3,8 @@ kind: ConfigMap
 metadata:
   name: eureka-cm
 data:
-  eureka_service_address: http://eureka-0.eureka:8761/eureka
-
+  eureka_service_address: "http://localhost:8761/eureka"
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -20,9 +18,7 @@ spec:
       name: eureka
   selector:
     app: eureka
-
 ---
-
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -50,10 +46,7 @@ spec:
                 configMapKeyRef:
                   name: eureka-cm
                   key: eureka_service_address
-
-
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
