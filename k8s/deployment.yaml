@@ -1,62 +1,31 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: eureka-cm
-data:
-  eureka_service_address: "http://localhost:8761/eureka"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: eureka
-  labels:
-    app: eureka
-spec:
-  clusterIP: None
-  ports:
-    - port: 8761
-      name: eureka
-  selector:
-    app: eureka
----
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
-  name: eureka
+  name: soat3-ms-eureka
 spec:
-  serviceName: "eureka"
   replicas: 1
   selector:
     matchLabels:
-      app: eureka
+      app: soat3-ms-eureka
   template:
     metadata:
       labels:
-        app: eureka
+        app: soat3-ms-eureka
     spec:
       containers:
-        - name: eureka
-          image: dailycodebuffer/service-registry:0.0.1
-          imagePullPolicy: Always
+        - name: soat3-ms-eureka
+          image: franciscosviana/soat3-ms-eureka:v1
           ports:
             - containerPort: 8761
-          env:
-            - name: EUREKA_SERVER_ADDRESS
-              valueFrom:
-                configMapKeyRef:
-                  name: eureka-cm
-                  key: eureka_service_address
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: eureka-lb
-  labels:
-    app: eureka
+  name: soat3-ms-eureka
 spec:
   selector:
-    app: eureka
-  type: NodePort
+    app: soat3-ms-eureka
   ports:
-    - port: 80
+    - protocol: TCP
+      port: 80
       targetPort: 8761
