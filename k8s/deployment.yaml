@@ -28,6 +28,6 @@ spec:
     app: soat3-ms-eureka
   ports:
     - protocol: TCP
-      port: 80
+      port: 8761
       targetPort: 8761
       nodePort: 32002
