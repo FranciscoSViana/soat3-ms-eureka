@@ -1,3 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: soat3-ms-eureka-cm
+data:
+  eureka_service_address: "http://soat3-ms-eureka-service-0.soat3-ms-eureka-service:8761/eureka"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,17 +24,22 @@ spec:
           image: franciscosviana/soat3-ms-eureka:v1
           ports:
             - containerPort: 8761
+          env:
+            - name: EUREKA_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  name: soat3-ms-eureka-cm
+                  key: EUREKA_SERVER
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: soat3-ms-eureka-service
 spec:
-  type: NodePort
+  clusterIP: None
   selector:
     app: soat3-ms-eureka
   ports:
     - protocol: TCP
       port: 8761
-      targetPort: 8761
-      nodePort: 32002
+      name: soat3-ms-eureka-service
